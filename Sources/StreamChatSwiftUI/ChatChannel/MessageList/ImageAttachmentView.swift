@@ -330,8 +330,7 @@ struct LazyLoadingImage: View {
 
     var body: some View {
         CachedAsyncImageView(url: source)
-            .scaledToFill()
-            .aspectRatio(contentMode: .fill)
+            .scaledToFit()
             .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
             .allowsHitTesting(false)
             .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
