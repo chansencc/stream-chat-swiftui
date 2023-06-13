@@ -336,6 +336,9 @@ struct LazyLoadingImage: View {
             .allowsHitTesting(false)
             .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
             .clipped()
+            .onAppear {
+                print("SC: LazyLoadingImage - \(source.absoluteString)")
+            }
     }
 }
 
