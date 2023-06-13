@@ -329,16 +329,13 @@ struct LazyLoadingImage: View {
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
 
     var body: some View {
-        ZStack {
-            CachedAsyncImageView(url: source)
-//                .resizable()
-                .scaledToFill()
-                .aspectRatio(contentMode: .fill)
-                .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
-                .allowsHitTesting(false)
-                .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
-                .clipped()
-        }
+        CachedAsyncImageView(url: source)
+            .scaledToFill()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
+            .allowsHitTesting(false)
+            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
+            .clipped()
     }
 }
 
