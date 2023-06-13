@@ -317,7 +317,6 @@ struct MultiImageView: View {
 struct LazyLoadingImage: View {
     @Injected(\.utils) private var utils
 
-    @State private var image: UIImage?
     @State private var error: Error?
 
     let source: URL
@@ -331,24 +330,33 @@ struct LazyLoadingImage: View {
 
     var body: some View {
         ZStack {
-            if let image = image {
-                imageView(for: image)
-                if let imageTapped = imageTapped {
-                    // NOTE: needed because of bug with SwiftUI.
-                    // The click area expands outside the image view (although not visible).
-                    Rectangle()
-                        .opacity(0.000001)
-                        .frame(width: width, height: height)
-                        .clipped()
-                        .allowsHitTesting(true)
-                        .highPriorityGesture(
-                            TapGesture()
-                                .onEnded { _ in
-                                    imageTapped(index ?? 0)
-                                }
-                        )
-                }
-            } else if error != nil {
+            CachedAsyncImageView(url: source)
+//                .resizable()
+                .scaledToFill()
+                .aspectRatio(contentMode: .fill)
+                .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
+                .allowsHitTesting(false)
+                .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
+                .clipped()
+        }
+    }
+}
+
+extension ChatMessage {
+
+    var alignmentInBubble: HorizontalAlignment {
+        .leading
+    }
+}
+
+
+struct CachedAsyncImageView: View {
+    let url: URL
+    var body: some View {
+        LazyImage(url: url) { state in
+            if let image = state.image {
+                image
+            } else if state.error != nil {
                 Color(.secondarySystemBackground)
             } else {
                 ZStack {
@@ -357,44 +365,5 @@ struct LazyLoadingImage: View {
                 }
             }
         }
-        .onAppear {
-            if image != nil {
-                return
-            }
-
-            utils.imageLoader.loadImage(
-                url: source,
-                imageCDN: utils.imageCDN,
-                resize: resize,
-                preferredSize: CGSize(width: width, height: height),
-                completion: { result in
-                    switch result {
-                    case let .success(image):
-                        self.image = image
-                        onImageLoaded(image)
-                    case let .failure(error):
-                        self.error = error
-                    }
-                }
-            )
-        }
-    }
-
-    func imageView(for image: UIImage) -> some View {
-        Image(uiImage: image)
-            .resizable()
-            .scaledToFill()
-            .aspectRatio(contentMode: .fill)
-            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
-            .allowsHitTesting(false)
-            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
-            .clipped()
-    }
-}
-
-extension ChatMessage {
-
-    var alignmentInBubble: HorizontalAlignment {
-        .leading
     }
 }
