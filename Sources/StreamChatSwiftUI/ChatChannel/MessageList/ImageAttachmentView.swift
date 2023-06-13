@@ -277,15 +277,19 @@ struct SingleImageView: View {
     var imageTapped: ((Int) -> Void)? = nil
     var index: Int?
 
+    private var height: CGFloat {
+        3 * width / 4
+    }
+
     var body: some View {
         LazyLoadingImage(
             source: source,
             width: width,
-            height: nil,
+            height: height,
             imageTapped: imageTapped,
             index: index
         )
-        .scaledToFit() // This will make the image adjust its size while maintaining its aspect ratio.
+        .frame(width: width, height: height)
         .accessibilityIdentifier("SingleImageView")
     }
 }
@@ -316,8 +320,8 @@ struct LazyLoadingImage: View {
     @State private var error: Error?
 
     let source: URL
-    let width: CGFloat?
-    let height: CGFloat?
+    let width: CGFloat
+    let height: CGFloat
     var resize: Bool = true
     var shouldSetFrame: Bool = true
     var imageTapped: ((Int) -> Void)? = nil
@@ -327,8 +331,7 @@ struct LazyLoadingImage: View {
     var body: some View {
         CachedAsyncImageView(url: source)
             .scaledToFit()
-            .frame(width: width, height: height)
-//            .frame(width: shouldSetFrame ? width : nil, height: nil)
+            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
             .allowsHitTesting(false)
             .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
             .clipped()
