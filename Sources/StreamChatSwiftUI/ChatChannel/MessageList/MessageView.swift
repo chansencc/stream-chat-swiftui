@@ -67,6 +67,9 @@ public struct MessageView<Factory: ViewFactory>: View {
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
                     )
+                    .onAppear {
+                        print("SC: Image")
+                    }
                 }
 
                 if messageTypeResolver.hasGiphyAttachment(message: message) {
@@ -76,6 +79,9 @@ public struct MessageView<Factory: ViewFactory>: View {
                         availableWidth: contentWidth,
                         scrolledId: $scrolledId
                     )
+                    .onAppear {
+                        print("SC: Giphy")
+                    }
                 }
 
                 if messageTypeResolver.hasVideoAttachment(message: message) {
