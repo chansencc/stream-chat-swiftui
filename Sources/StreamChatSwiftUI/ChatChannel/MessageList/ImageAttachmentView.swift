@@ -320,6 +320,7 @@ struct LazyLoadingImage: View {
     @Injected(\.utils) private var utils
 
     @State private var image: UIImage?
+    
     @State private var error: Error?
 
     let source: URL
