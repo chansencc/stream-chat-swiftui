@@ -331,15 +331,32 @@ struct LazyLoadingImage: View {
     var onImageLoaded: (UIImage) -> Void = { _ in /* Default implementation. */ }
 
     var body: some View {
-        CachedAsyncImageView(url: source)
-            .scaledToFit()
-            .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
-            .allowsHitTesting(false)
-            .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
-            .clipped()
-            .onAppear {
-                print("SC: LazyLoadingImage - \(source.absoluteString)")
+        ZStack {
+            CachedAsyncImageView(url: source)
+                .scaledToFit()
+                .frame(width: shouldSetFrame ? width : nil, height: shouldSetFrame ? height : nil)
+                .allowsHitTesting(false)
+                .scaleEffect(1.0001) // Needed because of SwiftUI sometimes incorrectly displaying landscape images.
+                .clipped()
+                .onAppear {
+                    print("SC: LazyLoadingImage - \(source.absoluteString)")
+                }
+            if let imageTapped = imageTapped {
+                // NOTE: needed because of bug with SwiftUI.
+                // The click area expands outside the image view (although not visible).
+                Rectangle()
+                    .opacity(0.000001)
+                    .frame(width: width, height: height)
+                    .clipped()
+                    .allowsHitTesting(true)
+                    .highPriorityGesture(
+                        TapGesture()
+                            .onEnded { _ in
+                                imageTapped(index ?? 0)
+                            }
+                    )
             }
+        }
     }
 }
 
