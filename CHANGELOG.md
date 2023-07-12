@@ -4,6 +4,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 # Upcoming
 
 ### 🔄 Changed
+- Video and giphy attachments now use `makeMessageViewModifier`
+- Updated scalling of avatar images
+
+### 🐞 Fixed
+- `AttachmentTextView` respects configured body font
+
+# [4.34.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.34.0)
+_July 06, 2023_
+
+### ✅ Added
+- Added factory method for customizing the message list container's modifier
+- Option to customize the date separation logic in the message list
+- Public init for `LinkAttachmentContainer`
 
 # [4.33.0](https://github.com/GetStream/stream-chat-swiftui/releases/tag/4.33.0)
 _June 09, 2023_
